@@ -1,14 +1,16 @@
-# Eclipse IDE
+# Eclipse / IDE files
 .metadata/
-.settings/
-*.tmp
-*.bak
-*.swp
+*.classpath
+*.project
+*.settings/
 
-# Build
+# Maven / Gradle build folders
 target/
-bin/
+build/
 
-# OS
+# Logs
+*.log
+
+# OS files
 .DS_Store
 Thumbs.db

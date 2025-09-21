@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bookstore Login</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+
+  <p id="token"></p>
+
+  <h2>Books</h2>
+  <button onclick="loadBooks()">Load Books</button>
+  <ul id="books"></ul>
+
+  <script>
+    let jwtToken = null;
+
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        jwtToken = data.token;
+        document.getElementById('token').innerText = "Token: " + jwtToken;
+      } else {
+        alert("Login failed");
+      }
+    }
+
+    async function loadBooks() {
+      if (!jwtToken) {
+        alert("Please login first");
+        return;
+      }
+
+      const response = await fetch('http://localhost:8080/books', {
+        headers: { 'Authorization': 'Bearer ' + jwtToken }
+      });
+
+      if (response.ok) {
+        const books = await response.json();
+        const list = document.getElementById('books');
+        list.innerHTML = '';
+        books.forEach(book => {
+          const li = document.createElement('li');
+          li.innerText = `${book.title} - ${book.author}`;
+          list.appendChild(li);
+        });
+      } else {
+        alert("Failed to fetch books");
+      }
+    }
+  </script>
+</body>
+</html>
